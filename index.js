@@ -23,7 +23,7 @@ app.get("/", (req, res) => res.send(page(`
 <input name="nombre" placeholder="Nombre" required>
 <input name="email" type="email" placeholder="Email" required>
 <input name="telefono" placeholder="Teléfono">
-<select name="tipo"><option>Cocina</option><option>Baño</option>
+<select name="tipo" required><option value="" disabled selected>Selecciona una opción</option><option>Cocina</option><option>Baño</option>
 <option>Vivienda completa</option><option>Local</option><option>Otro</option></select>
 <input name="metros" type="number" step="any" placeholder="Metros cuadrados">
 <textarea name="descripcion" rows="4" placeholder="Cuéntanos qué quieres hacer"></textarea>
