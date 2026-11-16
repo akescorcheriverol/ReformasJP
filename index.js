@@ -23,12 +23,19 @@ async function avisar(id, s) {
  if (!res.ok) throw new Error(await res.text());
 }
 const page = body => `<!doctype html><html lang="es"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1"><title>Reformas</title>
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>Reformas JP</title>
 <style>body{font-family:sans-serif;max-width:800px;margin:auto;padding:20px}
 input,select,textarea,button{width:100%;padding:10px;margin:6px 0;font-size:16px;box-sizing:border-box}
-button{background:#1f6f43;color:#fff;border:0;border-radius:6px}
-table{width:100%;border-collapse:collapse}td,th{border:1px solid #ccc;padding:6px;vertical-align:top}</style>
-</head><body>${body}</body></html>`;
+button{background:#ffca08;color:#0f0e0c;font-weight:bold;border:0;border-radius:6px;cursor:pointer}
+table{width:100%;border-collapse:collapse}td,th{border:1px solid #ccc;padding:6px;vertical-align:top}
+.marca{background:#0f0e0c;border-radius:10px;padding:18px 20px;margin-bottom:20px;display:flex;justify-content:center}
+.logo{display:flex;align-items:center;gap:12px}
+.nombre{font-family:Georgia,'Times New Roman',serif;font-weight:bold;font-size:34px;color:#fff;border-bottom:4px solid #ffca08;line-height:1.15;padding-bottom:2px}
+.lema{color:#fff;font-size:10px;letter-spacing:5px;margin-top:6px;font-family:Arial,sans-serif}
+.jp{width:64px;height:64px;border-radius:50%;background:#ffca08;color:#0f0e0c;font-weight:900;font-size:28px;display:flex;align-items:center;justify-content:center;font-family:'Arial Black',Arial,sans-serif;flex-shrink:0}
+h1{color:#0f0e0c;border-left:6px solid #ffca08;padding-left:10px}
+th{background:#0f0e0c;color:#fff}</style>
+</head><body><header class="marca"><div class="logo"><div><div class="nombre">Reformas</div><div class="lema">REFORMAS Y DISEÑO</div></div><div class="jp">JP</div></div></header>${body}</body></html>`;
 
 // Formulario para clientes
 app.get("/", (req, res) => res.send(page(`
