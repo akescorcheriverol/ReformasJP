@@ -8,6 +8,20 @@ const a = fn => (req, res, next) => fn(req, res, next).catch(next);
 const ESTADOS = ["Recibido","En revisión","Presupuesto enviado","Aceptado","En obra","Terminado"];
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c =>
   ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+async function avisar(id, s) {
+ if (!process.env.RESEND_API_KEY || !process.env.NOTIFY_EMAIL) return;
+ const res = await fetch("https://api.resend.com/emails", {
+ method: "POST",
+ headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, "Content-Type": "application/json" },
+ body: JSON.stringify({
+ from: "Reformas <onboarding@resend.dev>",
+ to: process.env.NOTIFY_EMAIL,
+ subject: `Nueva solicitud #${id}: ${s.tipo || ""}`,
+ html: `<h2>Nueva solicitud #${id}</h2><p><b>${esc(s.nombre)}</b><br>${esc(s.email)}<br>${esc(s.telefono)}</p><p><b>${esc(s.tipo)}</b> ${s.metros ? esc(s.metros) + " m2" : ""}</p><p>${esc(s.descripcion)}</p>`
+ })
+ });
+ if (!res.ok) throw new Error(await res.text());
+}
 const page = body => `<!doctype html><html lang="es"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1"><title>Reformas</title>
 <style>body{font-family:sans-serif;max-width:800px;margin:auto;padding:20px}
@@ -34,6 +48,7 @@ app.post("/solicitud", a(async (req, res) => {
   const r = await db.query(
     "INSERT INTO solicitudes (nombre,email,telefono,tipo,metros,descripcion) VALUES ($1,$2,$3,$4,$5,$6) RETURNING id",
     [nombre, email, telefono, tipo, metros || null, descripcion]);
+ avisar(r.rows[0].id, req.body).catch(e => console.error("Email:", e.message));
   res.send(page(`<h1>¡Gracias, ${esc(nombre)}!</h1>
 <p>Tu número de solicitud es <b>#${r.rows[0].id}</b>. Te contactaremos pronto.</p>`));
 }));
